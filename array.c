@@ -1,10 +1,12 @@
 #include "linear_sequence.h"
 #include <string.h>
 
+#define CONTAINER_INITIAL_SIZE 10;
+
 typedef struct {
 	LSQ_BaseTypeT* data;
-	int size;
-	int count;
+	int physical_size;
+	int logical_size;
 }	ArrayT, *ArrayPtrT;
 
 
@@ -14,9 +16,12 @@ typedef struct {
 }	IteratorT, *IteratorPtrT;
 
 static LSQ_IteratorT CreateIterator(LSQ_HandleT h, LSQ_IntegerIndexT index){
-	IteratorPtrT iter = (IteratorPtrT) malloc(sizeof(IteratorT));
-	if ((h == LSQ_HandleInvalid)||(iter == NULL))
+	IteratorPtrT iter = NULL;
+	if (h == LSQ_HandleInvalid)
 		return LSQ_HandleInvalid;
+	iter = (IteratorPtrT) malloc(sizeof(IteratorT));
+	if (iter == NULL)
+		return NULL;
 	iter->handle = (ArrayPtrT)h;
 	iter->index = index;
 	return iter;
@@ -24,29 +29,28 @@ static LSQ_IteratorT CreateIterator(LSQ_HandleT h, LSQ_IntegerIndexT index){
 
 static void InsertElementAtIndex(LSQ_HandleT handle, LSQ_IntegerIndexT index, LSQ_BaseTypeT element){
 	ArrayPtrT h = (ArrayPtrT)handle;
-	LSQ_BaseTypeT* PlaceOfElement;
+	LSQ_BaseTypeT* PlaceOfElement = NULL;
 	if(h == NULL) 
 		return;
-	if(h->count == h->size){
-		h->size++;
-		if(h->size != 0)
-			h->data = (LSQ_BaseTypeT*)realloc(h->data, sizeof(LSQ_BaseTypeT) * h->size);
+	if(h->physical_size == h->logical_size){
+		h->logical_size++;
+		h->data = (LSQ_BaseTypeT*)realloc(h->data, sizeof(LSQ_BaseTypeT) * h->logical_size);
 	}	
 	PlaceOfElement = h->data + index;
-	memmove(PlaceOfElement + 1, PlaceOfElement, sizeof(LSQ_BaseTypeT) * (h->count - index));	
+	memmove(PlaceOfElement + 1, PlaceOfElement, sizeof(LSQ_BaseTypeT) * (h->physical_size - index));	
 	*PlaceOfElement = element;
-	h->count++;
+	h->physical_size++;
 }
 
 static void DeleteElementAtIndex(LSQ_HandleT handle, LSQ_IntegerIndexT index){
 	ArrayPtrT h = (ArrayPtrT)handle;
-	LSQ_BaseTypeT* PlaceOfElement;
+	LSQ_BaseTypeT* PlaceOfElement = NULL;
 	if(h == NULL) 
 		return;
-	if (h->count > 0){
+	if (h->physical_size > 0){
 		PlaceOfElement = h->data + index;
-		memmove(PlaceOfElement , PlaceOfElement + 1, sizeof(LSQ_BaseTypeT) * (h->count - index));	
-		h->count--;
+		memmove(PlaceOfElement , PlaceOfElement + 1, sizeof(LSQ_BaseTypeT) * (h->physical_size - index));	
+		h->physical_size--;
 	}
 }
 
@@ -56,8 +60,8 @@ extern LSQ_HandleT LSQ_CreateSequence(void){
 	if (h == LSQ_HandleInvalid)
 		return LSQ_HandleInvalid;
 	h->data = (LSQ_BaseTypeT*)malloc(sizeof(LSQ_BaseTypeT) * 10);
-	h->count = 0;
-	h->size = 10; 
+	h->physical_size = 0;
+	h->logical_size = CONTAINER_INITIAL_SIZE; 
 	return h;
 }
 
@@ -71,39 +75,27 @@ extern void LSQ_DestroySequence(LSQ_HandleT handle){
 
 /* Функция, возвращающая текущее количество элементов в контейнере */
 extern LSQ_IntegerIndexT LSQ_GetSize(LSQ_HandleT handle){
-	if (handle == LSQ_HandleInvalid)
-		return -1;
-	else
-		return ((ArrayPtrT)handle)->count;
+	return (handle != LSQ_HandleInvalid) ? ((ArrayPtrT)handle)->physical_size : -1;
 }
 
 /* Функция, определяющая, может ли данный итератор быть разыменован */
 extern int LSQ_IsIteratorDereferencable(LSQ_IteratorT iterator){
-	if (iterator == NULL)
-		return 0;
-	else
-		return	!LSQ_IsIteratorBeforeFirst(iterator) && !LSQ_IsIteratorPastRear(iterator);
+	return	(iterator != NULL) ? !LSQ_IsIteratorBeforeFirst(iterator) && !LSQ_IsIteratorPastRear(iterator) : 0;
 }
 
 /* Функция, определяющая, указывает ли данный итератор на элемент, следующий за последним в контейнере */
 extern int LSQ_IsIteratorPastRear(LSQ_IteratorT iterator){
-	if (iterator == NULL)
-		return 0;
-	else
-		return ((IteratorPtrT)iterator)->index >= ((ArrayPtrT)((IteratorPtrT)iterator)->handle)->count;
+	return (iterator != NULL) ? ((IteratorPtrT)iterator)->index >= ((ArrayPtrT)((IteratorPtrT)iterator)->handle)->physical_size : 0;
 }
 
 /* Функция, определяющая, указывает ли данный итератор на элемент, предшествующий первому в контейнере */
 extern int LSQ_IsIteratorBeforeFirst(LSQ_IteratorT iterator){
-	if (iterator == NULL)
-		return 0;
-	else
-		return ((IteratorPtrT)iterator)->index < 0;
+	return (iterator != NULL) ? ((IteratorPtrT)iterator)->index < 0 : 0;
 }
 
 /* Функция разыменовывающая итератор. Возвращает указатель на элемент, на который ссылается данный итератор */
 extern LSQ_BaseTypeT* LSQ_DereferenceIterator(LSQ_IteratorT iterator){
-	IteratorPtrT iter;
+	IteratorPtrT iter = NULL;
 	if (iterator == NULL)
 		return NULL;
 	iter = (IteratorPtrT)iterator;
@@ -121,18 +113,14 @@ extern LSQ_IteratorT LSQ_GetFrontElement(LSQ_HandleT handle){
 	return CreateIterator(handle, 0);
 }
 
-/* Функция, возвращающая итератор, ссылающийся на последний элемент контейнера */
+/* Функция, возвращающая итератор, ссылающийся на элемент следующий за последним контейнера */
 extern LSQ_IteratorT LSQ_GetPastRearElement(LSQ_HandleT handle){
-	if (handle == LSQ_HandleInvalid)
-		return NULL;
-	else
-		return CreateIterator(handle, ((ArrayPtrT)handle)->count /*- 1*/); //ВРоде как на последний, а не следюущий за ним.
+	return (handle != LSQ_HandleInvalid) ? CreateIterator(handle, ((ArrayPtrT)handle)->physical_size ) : 0; 
 }
 
 /* Функция, уничтожающая итератор с заданным дескриптором и освобождающая принадлежащую ему память */
 extern void LSQ_DestroyIterator(LSQ_IteratorT iterator){
-	if (iterator != NULL)
-		free(iterator);
+	free(iterator);
 }
 
 /* Функция, перемещающая итератор на один элемент вперед */
@@ -168,7 +156,7 @@ extern void LSQ_InsertFrontElement(LSQ_HandleT handle, LSQ_BaseTypeT element){
 extern void LSQ_InsertRearElement(LSQ_HandleT handle, LSQ_BaseTypeT element){
 	if (handle == LSQ_HandleInvalid)
 		return;
-	InsertElementAtIndex(handle, ((ArrayPtrT)handle)->count, element);
+	InsertElementAtIndex(handle, ((ArrayPtrT)handle)->physical_size, element);
 }
 
 /* Функция, добавляющая элемент в контейнер на позицию, указываемую в данный момент итератором. Элемент, на который  *
@@ -191,7 +179,7 @@ extern void LSQ_DeleteFrontElement(LSQ_HandleT handle){
 extern void LSQ_DeleteRearElement(LSQ_HandleT handle){
 	if (handle == LSQ_HandleInvalid)
 		return;
-	DeleteElementAtIndex(handle, ((ArrayPtrT)handle)->count - 1);
+	DeleteElementAtIndex(handle, ((ArrayPtrT)handle)->physical_size - 1);
 }
 
 /* Функция, удаляющая элемент контейнера, указываемый заданным итератором. Все последующие элементы смещаются на     *
