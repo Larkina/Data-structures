@@ -1,4 +1,4 @@
-#include "linear_sequence.h"
+п»ї#include "linear_sequence.h"
 #include <string.h>
 
 #define CONTAINER_INITIAL_SIZE 10;
@@ -54,7 +54,7 @@ static void DeleteElementAtIndex(LSQ_HandleT handle, LSQ_IntegerIndexT index){
 	}
 }
 
-/* Функция, создающая пустой контейнер. Возвращает назначенный ему дескриптор */
+/* Р¤СѓРЅРєС†РёСЏ, СЃРѕР·РґР°СЋС‰Р°СЏ РїСѓСЃС‚РѕР№ РєРѕРЅС‚РµР№РЅРµСЂ. Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°Р·РЅР°С‡РµРЅРЅС‹Р№ РµРјСѓ РґРµСЃРєСЂРёРїС‚РѕСЂ */
 extern LSQ_HandleT LSQ_CreateSequence(void){
 	ArrayPtrT h = (ArrayPtrT)malloc(sizeof(ArrayT));
 	if (h == LSQ_HandleInvalid)
@@ -65,7 +65,7 @@ extern LSQ_HandleT LSQ_CreateSequence(void){
 	return h;
 }
 
-/* Функция, уничтожающая контейнер с заданным дескриптором. Освобождает принадлежащую ему память */
+/* Р¤СѓРЅРєС†РёСЏ, СѓРЅРёС‡С‚РѕР¶Р°СЋС‰Р°СЏ РєРѕРЅС‚РµР№РЅРµСЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РґРµСЃРєСЂРёРїС‚РѕСЂРѕРј. РћСЃРІРѕР±РѕР¶РґР°РµС‚ РїСЂРёРЅР°РґР»РµР¶Р°С‰СѓСЋ РµРјСѓ РїР°РјСЏС‚СЊ */
 extern void LSQ_DestroySequence(LSQ_HandleT handle){
 	if (handle != LSQ_HandleInvalid){
 		free(((ArrayPtrT)handle)->data);
@@ -73,27 +73,27 @@ extern void LSQ_DestroySequence(LSQ_HandleT handle){
 	}
 }
 
-/* Функция, возвращающая текущее количество элементов в контейнере */
+/* Р¤СѓРЅРєС†РёСЏ, РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏ С‚РµРєСѓС‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РєРѕРЅС‚РµР№РЅРµСЂРµ */
 extern LSQ_IntegerIndexT LSQ_GetSize(LSQ_HandleT handle){
 	return (handle != LSQ_HandleInvalid) ? ((ArrayPtrT)handle)->physical_size : -1;
 }
 
-/* Функция, определяющая, может ли данный итератор быть разыменован */
+/* Р¤СѓРЅРєС†РёСЏ, РѕРїСЂРµРґРµР»СЏСЋС‰Р°СЏ, РјРѕР¶РµС‚ Р»Рё РґР°РЅРЅС‹Р№ РёС‚РµСЂР°С‚РѕСЂ Р±С‹С‚СЊ СЂР°Р·С‹РјРµРЅРѕРІР°РЅ */
 extern int LSQ_IsIteratorDereferencable(LSQ_IteratorT iterator){
 	return	(iterator != NULL) ? !LSQ_IsIteratorBeforeFirst(iterator) && !LSQ_IsIteratorPastRear(iterator) : 0;
 }
 
-/* Функция, определяющая, указывает ли данный итератор на элемент, следующий за последним в контейнере */
+/* Р¤СѓРЅРєС†РёСЏ, РѕРїСЂРµРґРµР»СЏСЋС‰Р°СЏ, СѓРєР°Р·С‹РІР°РµС‚ Р»Рё РґР°РЅРЅС‹Р№ РёС‚РµСЂР°С‚РѕСЂ РЅР° СЌР»РµРјРµРЅС‚, СЃР»РµРґСѓСЋС‰РёР№ Р·Р° РїРѕСЃР»РµРґРЅРёРј РІ РєРѕРЅС‚РµР№РЅРµСЂРµ */
 extern int LSQ_IsIteratorPastRear(LSQ_IteratorT iterator){
 	return (iterator != NULL) ? ((IteratorPtrT)iterator)->index >= ((ArrayPtrT)((IteratorPtrT)iterator)->handle)->physical_size : 0;
 }
 
-/* Функция, определяющая, указывает ли данный итератор на элемент, предшествующий первому в контейнере */
+/* Р¤СѓРЅРєС†РёСЏ, РѕРїСЂРµРґРµР»СЏСЋС‰Р°СЏ, СѓРєР°Р·С‹РІР°РµС‚ Р»Рё РґР°РЅРЅС‹Р№ РёС‚РµСЂР°С‚РѕСЂ РЅР° СЌР»РµРјРµРЅС‚, РїСЂРµРґС€РµСЃС‚РІСѓСЋС‰РёР№ РїРµСЂРІРѕРјСѓ РІ РєРѕРЅС‚РµР№РЅРµСЂРµ */
 extern int LSQ_IsIteratorBeforeFirst(LSQ_IteratorT iterator){
 	return (iterator != NULL) ? ((IteratorPtrT)iterator)->index < 0 : 0;
 }
 
-/* Функция разыменовывающая итератор. Возвращает указатель на элемент, на который ссылается данный итератор */
+/* Р¤СѓРЅРєС†РёСЏ СЂР°Р·С‹РјРµРЅРѕРІС‹РІР°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ. Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЌР»РµРјРµРЅС‚, РЅР° РєРѕС‚РѕСЂС‹Р№ СЃСЃС‹Р»Р°РµС‚СЃСЏ РґР°РЅРЅС‹Р№ РёС‚РµСЂР°С‚РѕСЂ */
 extern LSQ_BaseTypeT* LSQ_DereferenceIterator(LSQ_IteratorT iterator){
 	IteratorPtrT iter = NULL;
 	if (iterator == NULL)
@@ -102,65 +102,65 @@ extern LSQ_BaseTypeT* LSQ_DereferenceIterator(LSQ_IteratorT iterator){
 	return ((ArrayPtrT)(iter->handle))->data + iter->index;
 }
 
-/* Следующие три функции создают итератор в памяти и возвращают его дескриптор */
-/* Функция, возвращающая итератор, ссылающийся на элемент с указанным индексом */
+/* РЎР»РµРґСѓСЋС‰РёРµ С‚СЂРё С„СѓРЅРєС†РёРё СЃРѕР·РґР°СЋС‚ РёС‚РµСЂР°С‚РѕСЂ РІ РїР°РјСЏС‚Рё Рё РІРѕР·РІСЂР°С‰Р°СЋС‚ РµРіРѕ РґРµСЃРєСЂРёРїС‚РѕСЂ */
+/* Р¤СѓРЅРєС†РёСЏ, РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ, СЃСЃС‹Р»Р°СЋС‰РёР№СЃСЏ РЅР° СЌР»РµРјРµРЅС‚ СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РёРЅРґРµРєСЃРѕРј */
 extern LSQ_IteratorT LSQ_GetElementByIndex(LSQ_HandleT handle, LSQ_IntegerIndexT index){
 	return CreateIterator(handle, index);
 }
 
-/* Функция, возвращающая итератор, ссылающийся на первый элемент контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ, СЃСЃС‹Р»Р°СЋС‰РёР№СЃСЏ РЅР° РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern LSQ_IteratorT LSQ_GetFrontElement(LSQ_HandleT handle){
 	return CreateIterator(handle, 0);
 }
 
-/* Функция, возвращающая итератор, ссылающийся на элемент следующий за последним контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, РІРѕР·РІСЂР°С‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ, СЃСЃС‹Р»Р°СЋС‰РёР№СЃСЏ РЅР° СЌР»РµРјРµРЅС‚ СЃР»РµРґСѓСЋС‰РёР№ Р·Р° РїРѕСЃР»РµРґРЅРёРј РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern LSQ_IteratorT LSQ_GetPastRearElement(LSQ_HandleT handle){
 	return (handle != LSQ_HandleInvalid) ? CreateIterator(handle, ((ArrayPtrT)handle)->physical_size ) : 0; 
 }
 
-/* Функция, уничтожающая итератор с заданным дескриптором и освобождающая принадлежащую ему память */
+/* Р¤СѓРЅРєС†РёСЏ, СѓРЅРёС‡С‚РѕР¶Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ СЃ Р·Р°РґР°РЅРЅС‹Рј РґРµСЃРєСЂРёРїС‚РѕСЂРѕРј Рё РѕСЃРІРѕР±РѕР¶РґР°СЋС‰Р°СЏ РїСЂРёРЅР°РґР»РµР¶Р°С‰СѓСЋ РµРјСѓ РїР°РјСЏС‚СЊ */
 extern void LSQ_DestroyIterator(LSQ_IteratorT iterator){
 	free(iterator);
 }
 
-/* Функция, перемещающая итератор на один элемент вперед */
+/* Р¤СѓРЅРєС†РёСЏ, РїРµСЂРµРјРµС‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ РЅР° РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РІРїРµСЂРµРґ */
 extern void LSQ_AdvanceOneElement(LSQ_IteratorT iterator){
 	LSQ_ShiftPosition(iterator, 1);
 }
 
-/* Функция, перемещающая итератор на один элемент назад */
+/* Р¤СѓРЅРєС†РёСЏ, РїРµСЂРµРјРµС‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ РЅР° РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РЅР°Р·Р°Рґ */
 extern void LSQ_RewindOneElement(LSQ_IteratorT iterator){
 	LSQ_ShiftPosition(iterator, -1);
 }
 
-/* Функция, перемещающая итератор на заданное смещение со знаком */
+/* Р¤СѓРЅРєС†РёСЏ, РїРµСЂРµРјРµС‰Р°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ РЅР° Р·Р°РґР°РЅРЅРѕРµ СЃРјРµС‰РµРЅРёРµ СЃРѕ Р·РЅР°РєРѕРј */
 extern void LSQ_ShiftPosition(LSQ_IteratorT iterator, LSQ_IntegerIndexT shift){
 	if (iterator == NULL)
 		return;
 	((IteratorPtrT)iterator)->index += shift;
 }
 
-/* Функция, устанавливающая итератор на элемент с указанным номером */
+/* Р¤СѓРЅРєС†РёСЏ, СѓСЃС‚Р°РЅР°РІР»РёРІР°СЋС‰Р°СЏ РёС‚РµСЂР°С‚РѕСЂ РЅР° СЌР»РµРјРµРЅС‚ СЃ СѓРєР°Р·Р°РЅРЅС‹Рј РЅРѕРјРµСЂРѕРј */
 extern void LSQ_SetPosition(LSQ_IteratorT iterator, LSQ_IntegerIndexT pos){
 	if (iterator == NULL)
 		return;
 	((IteratorPtrT)iterator)->index = pos;
 }
 
-/* Функция, добавляющая элемент в начало контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, РґРѕР±Р°РІР»СЏСЋС‰Р°СЏ СЌР»РµРјРµРЅС‚ РІ РЅР°С‡Р°Р»Рѕ РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern void LSQ_InsertFrontElement(LSQ_HandleT handle, LSQ_BaseTypeT element){
 	InsertElementAtIndex(handle, 0, element);
 }
 
-/* Функция, добавляющая элемент в конец контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, РґРѕР±Р°РІР»СЏСЋС‰Р°СЏ СЌР»РµРјРµРЅС‚ РІ РєРѕРЅРµС† РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern void LSQ_InsertRearElement(LSQ_HandleT handle, LSQ_BaseTypeT element){
 	if (handle == LSQ_HandleInvalid)
 		return;
 	InsertElementAtIndex(handle, ((ArrayPtrT)handle)->physical_size, element);
 }
 
-/* Функция, добавляющая элемент в контейнер на позицию, указываемую в данный момент итератором. Элемент, на который  *
- * указывает итератор, а также все последующие, сдвигается на одну позицию в конец.                                  */
+/* Р¤СѓРЅРєС†РёСЏ, РґРѕР±Р°РІР»СЏСЋС‰Р°СЏ СЌР»РµРјРµРЅС‚ РІ РєРѕРЅС‚РµР№РЅРµСЂ РЅР° РїРѕР·РёС†РёСЋ, СѓРєР°Р·С‹РІР°РµРјСѓСЋ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РёС‚РµСЂР°С‚РѕСЂРѕРј. Р­Р»РµРјРµРЅС‚, РЅР° РєРѕС‚РѕСЂС‹Р№  *
+ * СѓРєР°Р·С‹РІР°РµС‚ РёС‚РµСЂР°С‚РѕСЂ, Р° С‚Р°РєР¶Рµ РІСЃРµ РїРѕСЃР»РµРґСѓСЋС‰РёРµ, СЃРґРІРёРіР°РµС‚СЃСЏ РЅР° РѕРґРЅСѓ РїРѕР·РёС†РёСЋ РІ РєРѕРЅРµС†.                                  */
 extern void LSQ_InsertElementBeforeGiven(LSQ_IteratorT iterator, LSQ_BaseTypeT newElement){
 	IteratorPtrT iter = (IteratorPtrT)iterator;
 	if (iterator == NULL)
@@ -168,22 +168,22 @@ extern void LSQ_InsertElementBeforeGiven(LSQ_IteratorT iterator, LSQ_BaseTypeT n
 	InsertElementAtIndex(iter->handle, iter->index, newElement);
 }
 
-/* Функция, удаляющая первый элемент контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, СѓРґР°Р»СЏСЋС‰Р°СЏ РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern void LSQ_DeleteFrontElement(LSQ_HandleT handle){
 	if (handle == LSQ_HandleInvalid)
 		return;
 	DeleteElementAtIndex(handle, 0);
 }
 
-/* Функция, удаляющая последний элемент контейнера */
+/* Р¤СѓРЅРєС†РёСЏ, СѓРґР°Р»СЏСЋС‰Р°СЏ РїРѕСЃР»РµРґРЅРёР№ СЌР»РµРјРµРЅС‚ РєРѕРЅС‚РµР№РЅРµСЂР° */
 extern void LSQ_DeleteRearElement(LSQ_HandleT handle){
 	if (handle == LSQ_HandleInvalid)
 		return;
 	DeleteElementAtIndex(handle, ((ArrayPtrT)handle)->physical_size - 1);
 }
 
-/* Функция, удаляющая элемент контейнера, указываемый заданным итератором. Все последующие элементы смещаются на     *
- * одну позицию в сторону начала.                                                                                    */
+/* Р¤СѓРЅРєС†РёСЏ, СѓРґР°Р»СЏСЋС‰Р°СЏ СЌР»РµРјРµРЅС‚ РєРѕРЅС‚РµР№РЅРµСЂР°, СѓРєР°Р·С‹РІР°РµРјС‹Р№ Р·Р°РґР°РЅРЅС‹Рј РёС‚РµСЂР°С‚РѕСЂРѕРј. Р’СЃРµ РїРѕСЃР»РµРґСѓСЋС‰РёРµ СЌР»РµРјРµРЅС‚С‹ СЃРјРµС‰Р°СЋС‚СЃСЏ РЅР°     *
+ * РѕРґРЅСѓ РїРѕР·РёС†РёСЋ РІ СЃС‚РѕСЂРѕРЅСѓ РЅР°С‡Р°Р»Р°.                                                                                    */
 extern void LSQ_DeleteGivenElement(LSQ_IteratorT iterator){
 	IteratorPtrT iter = (IteratorPtrT)iterator;
 	if (iterator == NULL)
