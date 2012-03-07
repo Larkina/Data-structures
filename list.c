@@ -143,18 +143,16 @@ extern void LSQ_ShiftPosition(LSQ_IteratorT iterator, LSQ_IntegerIndexT shift){
 	int i;
 	if (iter == NULL)
 		return;
-	if (shift > 0)
-		for (i = 0; i < shift; i++){
-			if (iter->element == NULL || LSQ_IsIteratorPastRear(iter))
-				break;
-			iter->element = iter->element->next;
-		}
-	else
-		for (i = 0; i < abs(shift); i++){
-			if (iter->element == NULL || LSQ_IsIteratorBeforeFirst(iter))
-				break;
-			iter->element = iter->element->prev;
-		}
+	for (i = 0; i < shift; i++){
+		if (iter->element == NULL || LSQ_IsIteratorPastRear(iter))
+			break;
+		iter->element = iter->element->next;
+	}
+	for (i = 0; i < abs(shift); i++){
+		if (iter->element == NULL || LSQ_IsIteratorBeforeFirst(iter))
+			break;
+		iter->element = iter->element->prev;
+	}
 }
 
 /* Функция, устанавливающая итератор на элемент с указанным номером */
